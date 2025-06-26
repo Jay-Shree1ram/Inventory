@@ -1,0 +1,11 @@
+h1{
+    text-align: center;
+    text-decoration: underline;
+    text-transform: capitalize;
+    margin: 10px 0;
+}
+
+p{
+    padding: 10px 20px;
+    text-align: justify;
+}

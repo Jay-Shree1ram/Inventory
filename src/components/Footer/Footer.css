@@ -1,0 +1,22 @@
+footer{
+    display: flex;
+    height: 100px;
+    background: #000000;
+    color: #ffffff;
+    align-items: center;
+    justify-content: space-between;
+}
+.footer-logo{
+    width: 110px;
+}
+
+.rights{
+  font-size: 14px;
+}
+.rights p{
+    text-align: center;
+}
+
+.container-margin{
+    margin: 0 60px;
+}
