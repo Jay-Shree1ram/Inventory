@@ -104,7 +104,7 @@ const LoginSignupForm = () => {
 
         <div className="submit-container">
           <button
-            type="button"
+            type="button submit"
             className={`submit ${action === "Login" ? "gray" : ""}`}
             onClick={() => setAction("Sign Up")}
           >
@@ -112,7 +112,7 @@ const LoginSignupForm = () => {
           </button>
 
           <button
-            type="button"
+            type="button submit"
             className={`submit ${action === "Sign Up" ? "gray" : ""}`}
             onClick={() => setAction("Login")}
           >
@@ -120,11 +120,11 @@ const LoginSignupForm = () => {
           </button>
         </div>
 
-        <div className="submit-container">
+        {/* <div className="submit-container">
           <button type="submit" className="submit main-submit">
             {action}
           </button>
-        </div>
+        </div> */}
       </form>
     </div>
   );

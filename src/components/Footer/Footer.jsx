@@ -1,5 +1,4 @@
 import React from 'react';
-import footerLogo from '../../assets/verisk_logo_footer.png';
 import './Footer.css';
 import '../../index.css'
 
@@ -9,7 +8,7 @@ const Footer = () => {
     <>
     <footer>
         <div className="footer-logo container-margin">
-            <img src={footerLogo} alt="" />
+          <h1>IMS</h1>
         </div>
         <div className="rights">
             <p>Privacy Notice</p>

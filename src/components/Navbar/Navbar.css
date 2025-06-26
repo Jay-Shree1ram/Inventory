@@ -7,12 +7,21 @@ nav{
     
     
 }
-.logo-img{
-    height: 50px;
-    width: 110px;
+.nav-logo{
     margin: 0 60px;
 }
 
+.nav-logo a {
+    text-decoration: none;
+    color: #ffffff;
+  }
+  
+.nav-logo h1{
+    color: #ffffff;
+    width: 100px;
+    font-size: 50px;
+    font-weight: 700;
+}
 
 .nav-items{
     margin-right:70px ;
