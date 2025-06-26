@@ -1,59 +1,133 @@
 import React, { useState } from "react";
-import "../../index.css";
+import axios from "axios";
 import "./LoginSignup.css";
 import user_icon from "../../assets/person.png";
 import email_icon from "../../assets/email.png";
 import password_icon from "../../assets/password.png";
 
-const LoginSignup = () => {
-  const [action, setAction] = useState("Sign Up");
+const LoginSignupForm = () => {
+  const [action, setAction] = useState("Login"); // Default to Login
+  const [formData, setFormData] = useState({
+    username: "",
+    email: "",
+    password: "",
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const { email, password, username } = formData;
+
+    if (!email || !password || (action === "Sign Up" && !username)) {
+      alert("Please fill in all required fields.");
+      return;
+    }
+
+    const payload = {
+      email,
+      password,
+      ...(action === "Sign Up" && { username }),
+    };
+
+    const endpoint =
+      action === "Sign Up"
+        ? "http://localhost:8080/api/auth/signup"
+        : "http://localhost:8080/api/auth/login";
+
+    try {
+      const response = await axios.post(endpoint, payload);
+
+      if (response.status === 200) {
+        alert(`${action} successful: ${response.data}`);
+        setFormData({ username: "", email: "", password: "" });
+      } else {
+        alert(`Unexpected response: ${response.statusText}`);
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      const message =
+        error.response?.data || "An error occurred. Please try again.";
+      alert(`${action} failed: ${message}`);
+    }
+  };
+
   return (
-    <>
-      <div className="container">
-        <div className="header">
-          <div className="text">{action}</div>
-          <div className="underline"></div>
-        </div>
-        <div className="inputs">
-          {action === "Login" ? (
-            <div></div>
-          ) : (
-            <div className="input">
-              <img src={user_icon} alt="user icon " />
-              <input type="text" placeholder="Username" />
-            </div>
-          )}
+    <div className="container">
+      <div className="header">
+        <div className="text">{action}</div>
+        <div className="underline"></div>
+      </div>
 
+      <form className="inputs" onSubmit={handleSubmit}>
+        {action === "Sign Up" && (
           <div className="input">
-            <img src={email_icon} alt="email icon " />
-            <input type="email" placeholder="Email" />
+            <img src={user_icon} alt="user icon" />
+            <input
+              type="text"
+              name="username"
+              placeholder="Username"
+              value={formData.username}
+              onChange={handleChange}
+            />
           </div>
+        )}
 
-          <div className="input">
-            <img src={password_icon} alt="password icon" />
-            <input type="password" placeholder="Password" />
-          </div>
+        <div className="input">
+          <img src={email_icon} alt="email icon" />
+          <input
+            type="email"
+            name="email"
+            placeholder="Email"
+            value={formData.email}
+            onChange={handleChange}
+          />
         </div>
+
+        <div className="input">
+          <img src={password_icon} alt="password icon" />
+          <input
+            type="password"
+            name="password"
+            placeholder="Password"
+            value={formData.password}
+            onChange={handleChange}
+          />
+        </div>
+
         <div className="submit-container">
           <button
+            type="button"
             className={`submit ${action === "Login" ? "gray" : ""}`}
             onClick={() => setAction("Sign Up")}
-            disabled={action === "Sign Up"} 
           >
             Sign Up
           </button>
 
           <button
+            type="button"
             className={`submit ${action === "Sign Up" ? "gray" : ""}`}
             onClick={() => setAction("Login")}
-            disabled={action === "Login"} 
           >
             Login
           </button>
         </div>
-      </div>
-    </>
+
+        <div className="submit-container">
+          <button type="submit" className="submit main-submit">
+            {action}
+          </button>
+        </div>
+      </form>
+    </div>
   );
 };
 
-export default LoginSignup;
+export default LoginSignupForm;
