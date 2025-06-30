@@ -6,7 +6,7 @@ import email_icon from "../../assets/email.png";
 import password_icon from "../../assets/password.png";
 
 const LoginSignupForm = () => {
-  const [action, setAction] = useState("Login"); // Default to Login
+  const [action, setAction] = useState("Login"); 
   const [formData, setFormData] = useState({
     username: "",
     email: "",
@@ -74,7 +74,8 @@ const LoginSignupForm = () => {
               type="text"
               name="username"
               placeholder="Username"
-              value={formData.username}
+              value
+              ={formData.username}
               onChange={handleChange}
             />
           </div>
