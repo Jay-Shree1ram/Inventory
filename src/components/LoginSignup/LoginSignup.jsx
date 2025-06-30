@@ -1,17 +1,22 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import axios from "axios";
 import "./LoginSignup.css";
 import user_icon from "../../assets/person.png";
 import email_icon from "../../assets/email.png";
 import password_icon from "../../assets/password.png";
+import { AuthContext } from "../Global/common";
+import { useNavigate } from "react-router-dom";
 
 const LoginSignupForm = () => {
-  const [action, setAction] = useState("Login"); 
+  const [action, setAction] = useState("Login");
   const [formData, setFormData] = useState({
     username: "",
     email: "",
     password: "",
   });
+
+  const { setAccessToken } = useContext(AuthContext);
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -23,7 +28,6 @@ const LoginSignupForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     const { email, password, username } = formData;
 
     if (!email || !password || (action === "Sign Up" && !username)) {
@@ -44,10 +48,20 @@ const LoginSignupForm = () => {
 
     try {
       const response = await axios.post(endpoint, payload);
-
       if (response.status === 200) {
-        alert(`${action} successful: ${response.data}`);
-        setFormData({ username: "", email: "", password: "" });
+        const token = response.data.data?.accessToken || response.data.token;
+
+        if (token) {
+          localStorage.setItem("accessToken", token);
+          setAccessToken(token);
+          alert(`${action} successful.`);
+          setFormData({ username: "", email: "", password: "" });
+
+          // Optional: redirect to protected page
+          // navigate("/dashboard");
+        } else {
+          alert("Access token missing in response.");
+        }
       } else {
         alert(`Unexpected response: ${response.statusText}`);
       }
@@ -74,8 +88,7 @@ const LoginSignupForm = () => {
               type="text"
               name="username"
               placeholder="Username"
-              value
-              ={formData.username}
+              value={formData.username}
               onChange={handleChange}
             />
           </div>
@@ -104,28 +117,20 @@ const LoginSignupForm = () => {
         </div>
 
         <div className="submit-container">
-          <button
-            type="button submit"
-            className={`submit ${action === "Login" ? "gray" : ""}`}
-            onClick={() => setAction("Sign Up")}
-          >
-            Sign Up
-          </button>
-
-          <button
-            type="button submit"
-            className={`submit ${action === "Sign Up" ? "gray" : ""}`}
-            onClick={() => setAction("Login")}
-          >
-            Login
-          </button>
-        </div>
-
-        {/* <div className="submit-container">
           <button type="submit" className="submit main-submit">
             {action}
           </button>
-        </div> */}
+
+          <button
+            type="button"
+            className="submit toggle-button"
+            onClick={() =>
+              setAction((prev) => (prev === "Login" ? "Sign Up" : "Login"))
+            }
+          >
+            {action === "Login" ? "Switch to Sign Up" : "Switch to Login"}
+          </button>
+        </div>
       </form>
     </div>
   );

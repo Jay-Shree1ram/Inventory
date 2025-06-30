@@ -1,27 +1,47 @@
-import  { useReducer } from 'react';
+
+import { useState, useContext } from 'react';
 import axios from 'axios';
 import Header from '../Navbar/Navbar';
-import { formReducer, initialState} from './resource';
+import Footer from '../Footer/Footer';
+import { AuthContext } from '../Global/common';
+import { useNavigate } from 'react-router-dom';
 const ResourceForm = () => {
-  const [state, dispatch] = useReducer(formReducer, initialState);
-
-  const handleChange = (e:any) => {
-    dispatch({
-      type: 'UPDATE_FIELD',
-      field: e.target.name,
-      value: e.target.value,
-    });
+  const [formState, setFormState] = useState({
+    brand: '',
+    model: '',
+    specification: '',
+    purchaseDate: '',
+    warrantyExpiry: '',
+    resourceTypeName: '',
+    resourceClassName: '',
+    resourceStatusName: '',
+   
+  });
+  const navigate = useNavigate();
+  const { accessToken, setAccessToken } = useContext(AuthContext);
+  
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setFormState({ ...formState, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e:any) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const token = localStorage.getItem('token');
-      await axios.post('/api/resources', state, {
-        headers: { Authorization: `Bearer ${token}` },
+
+      console.log('Submitting data:', formState);
+
+      await axios.post('http://localhost:8080/resources', [formState], {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${accessToken}`
+        },
+        withCredentials: true
       });
+
+      console.log('Resource created successfully');
       alert('Resource created!');
-      dispatch({ type: 'RESET' });
+      navigate('/resource');
+     
     } catch (err) {
       console.error(err);
       alert('Error creating resource');
@@ -29,139 +49,141 @@ const ResourceForm = () => {
   };
 
   return (
- <>
- <Header/>
-  
-  <form onSubmit={handleSubmit} className="bg-gray-200 mt-10 p-6 rounded-3xl max-w-4xl mx-auto">
+    <>
+      <Header />
+      <div className="w-[800px] mx-auto mt-10 mb-10 bg-white rounded-3xl p-10 shadow-lg">
+        <h2 className="text-center text-4xl font-bold text-[#052535] mb-8">
+          Create Resource
+        </h2>
+        <form className="grid grid-cols-1 md:grid-cols-2 gap-8" onSubmit={handleSubmit}>
+          <div className="flex flex-col gap-2">
+            <label htmlFor="brand" className="font-semibold text-gray-700">
+              Brand
+            </label>
+            <input
+              id="brand"
+              name="brand"
+              value={formState.brand}
+              onChange={handleChange}
+              placeholder="Brand"
+              className="h-12 px-5 rounded-full bg-gray-200 text-gray-700 placeholder-gray-500 border-none outline-none focus:ring-2 focus:ring-[#052535]"
+            />
+          </div>
 
-  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
- 
-    <div>
-      <label htmlFor="brand" className="block mb-1 font-semibold">Brand</label>
-      <input
-        id="brand"
-        name="brand"
-        value={state.brand}
-        onChange={handleChange}
-        placeholder="Brand"
-        className="w-full border border-gray-300 rounded px-3 py-2"
-      />
-    </div>
+          <div className="flex flex-col gap-2">
+            <label htmlFor="model" className="font-semibold text-gray-700">
+              Model
+            </label>
+            <input
+              id="model"
+              name="model"
+              value={formState.model}
+              onChange={handleChange}
+              placeholder="Model"
+              className="h-12 px-5 rounded-full bg-gray-200 text-gray-700 placeholder-gray-500 border-none outline-none focus:ring-2 focus:ring-[#052535]"
+            />
+          </div>
 
-   
-    <div>
-      <label htmlFor="model" className="block mb-1 font-semibold">Model</label>
-      <input
-        id="model"
-        name="model"
-        value={state.model}
-        onChange={handleChange}
-        placeholder="Model"
-        className="w-full border border-gray-300 rounded px-3 py-2"
-      />
-    </div>
+          <div className="flex flex-col gap-2 md:col-span-2">
+            <label htmlFor="specification" className="font-semibold text-gray-700">
+              Specification
+            </label>
+            <textarea
+              id="specification"
+              name="specification"
+              value={formState.specification}
+              onChange={handleChange}
+              placeholder="Specification"
+              rows={4}
+              className="px-5 py-3 rounded-2xl bg-gray-200 text-gray-700 placeholder-gray-500 border-none outline-none resize-none focus:ring-2 focus:ring-[#052535]"
+            />
+          </div>
 
-    
-    <div className="md:col-span-2">
-      <label htmlFor="specification" className="block mb-1 font-semibold">Specification</label>
-      <textarea
-        id="specification"
-        name="specification"
-        value={state.specification}
-        onChange={handleChange}
-        placeholder="Specification"
-        className="w-full border border-gray-300 rounded px-3 py-2"
-        rows={4}
-      />
-    </div>
+          <div className="flex flex-col gap-2">
+            <label htmlFor="purchaseDate" className="font-semibold text-gray-700">
+              Purchase Date
+            </label>
+            <input
+              id="purchaseDate"
+              type="date"
+              name="purchaseDate"
+              value={formState.purchaseDate}
+              onChange={handleChange}
+              className="h-12 px-5 rounded-full bg-gray-200 text-gray-700 border-none outline-none focus:ring-2 focus:ring-[#052535]"
+            />
+          </div>
 
-  
-    <div>
-      <label htmlFor="purchaseDate" className="block mb-1 font-semibold">Purchase Date</label>
-      <input
-        id="purchaseDate"
-        type="date"
-        name="purchaseDate"
-        value={state.purchaseDate}
-        onChange={handleChange}
-        className="w-full border border-gray-300 rounded px-3 py-2"
-      />
-    </div>
+          <div className="flex flex-col gap-2">
+            <label htmlFor="warrantyExpiry" className="font-semibold text-gray-700">
+              Warranty Expiry
+            </label>
+            <input
+              id="warrantyExpiry"
+              type="date"
+              name="warrantyExpiry"
+              value={formState.warrantyExpiry}
+              onChange={handleChange}
+              className="h-12 px-5 rounded-full bg-gray-200 text-gray-700 border-none outline-none focus:ring-2 focus:ring-[#052535]"
+            />
+          </div>
 
+          <div className="flex flex-col gap-2">
+            <label htmlFor="resourceTypeName" className="font-semibold text-gray-700">
+              Resource Type Name
+            </label>
+            <input
+              id="resourceTypeName"
+              type="text"
+              name="resourceTypeName"
+              value={formState.resourceTypeName}
+              onChange={handleChange}
+              placeholder="Resource Type Name"
+              className="h-12 px-5 rounded-full bg-gray-200 text-gray-700 border-none outline-none focus:ring-2 focus:ring-[#052535]"
+            />
+          </div>
 
-    <div>
-      <label htmlFor="warrantyExpiry" className="block mb-1 font-semibold">Warranty Expiry</label>
-      <input
-        id="warrantyExpiry"
-        type="date"
-        name="warrantyExpiry"
-        value={state.warrantyExpiry}
-        onChange={handleChange}
-        className="w-full border border-gray-300 rounded px-3 py-2"
-      />
-    </div>
+          <div className="flex flex-col gap-2">
+            <label htmlFor="resourceClassName" className="font-semibold text-gray-700">
+              Resource Class Name
+            </label>
+            <input
+              id="resourceClassName"
+              type="text"
+              name="resourceClassName"
+              value={formState.resourceClassName}
+              onChange={handleChange}
+              placeholder="Resource Class Name"
+              className="h-12 px-5 rounded-full bg-gray-200 text-gray-700 border-none outline-none focus:ring-2 focus:ring-[#052535]"
+            />
+          </div>
 
+          <div className="flex flex-col gap-2">
+            <label htmlFor="resourceStatusName" className="font-semibold text-gray-700">
+              Resource Status Name
+            </label>
+            <input
+              id="resourceStatusName"
+              type="text"
+              name="resourceStatusName"
+              value={formState.resourceStatusName}
+              onChange={handleChange}
+              placeholder="Resource Status Name"
+              className="h-12 px-5 rounded-full bg-gray-200 text-gray-700 border-none outline-none focus:ring-2 focus:ring-[#052535]"
+            />
+          </div>
 
-    <div>
-      <label htmlFor="resourceTypeId" className="block mb-1 font-semibold">Resource Type ID</label>
-      <input
-        id="resourceTypeId"
-        type="number"
-        name="resourceTypeId"
-        value={state.resourceTypeId}
-        onChange={handleChange}
-        className="w-full border border-gray-300 rounded px-3 py-2"
-      />
-    </div>
+          
 
-   
-    <div>
-      <label htmlFor="resourceClassId" className="block mb-1 font-semibold">Resource Class ID</label>
-      <input
-        id="resourceClassId"
-        type="number"
-        name="resourceClassId"
-        value={state.resourceClassId}
-        onChange={handleChange}
-        className="w-full border border-gray-300 rounded px-3 py-2"
-      />
-    </div>
-
-
-    <div>
-      <label htmlFor="resourceStatusId" className="block mb-1 font-semibold">Resource Status ID</label>
-      <input
-        id="resourceStatusId"
-        type="number"
-        name="resourceStatusId"
-        value={state.resourceStatusId}
-        onChange={handleChange}
-        className="w-full border border-gray-300 rounded px-3 py-2"
-      />
-    </div>
-
-    <div>
-      <label htmlFor="batchId" className="block mb-1 font-semibold">Batch ID</label>
-      <input
-        id="batchId"
-        type="number"
-        name="batchId"
-        value={state.batchId}
-        onChange={handleChange}
-        className="w-full border border-gray-300 rounded px-3 py-2"
-      />
-    </div>
-  </div>
-
-  <button
-    type="submit"
-    className="mt-6 w-full bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-  >
-    Create Resource
-  </button>
-</form>
-
-</>
+          <button
+            type="submit"
+            className="mt-8 md:col-span-2 w-full bg-[#052535] text-white text-lg font-bold py-3 rounded-full hover:bg-[#03415a] transition-colors"
+          >
+            Create Resource
+          </button>
+        </form>
+      </div>
+      <Footer />
+    </>
   );
 };
 
@@ -170,155 +192,3 @@ export default ResourceForm;
 
 
 
-// import { useForm } from 'react-hook-form';
-// import axios from 'axios';
-// import Header from '../common/header';
-
-// const ResourceForm = () => {
-//   const {
-//     register,
-//     handleSubmit,
-//     reset,
-//     formState: { errors, isSubmitting }
-//   } = useForm({
-//     defaultValues: {
-//       brand: '',
-//       model: '',
-//       specification: '',
-//       purchaseDate: '',
-//       warrantyExpiry: '',
-//       resourceTypeId: '',
-//       resourceClassId: '',
-//       resourceStatusId: '',
-//       batchId: ''
-//     }
-//   });
-
-//   const onSubmit = async (data:any) => {
-//     try {
-//       const token = localStorage.getItem('token');
-//       await axios.post('/api/resources', data, {
-//         headers: { Authorization: `Bearer ${token}` },
-//       });
-//       alert('Resource created!');
-//       reset();
-//     } catch (err) {
-//       console.error(err);
-//       alert('Error creating resource');
-//     }
-//   };
-
-//   return (
-//     <>
-//       <Header />
-//       <form
-//         onSubmit={handleSubmit(onSubmit)}
-//         className="bg-gray-200 mt-10 p-6 rounded-3xl max-w-4xl mx-auto"
-//       >
-//         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        
-//           <div>
-//             <label className="block mb-1 font-semibold">Brand</label>
-//             <input
-//               {...register('brand', { required: 'Brand is required' })}
-//               placeholder="Brand"
-//               className="w-full border border-gray-300 rounded px-3 py-2"
-//             />
-//             {errors.brand && <p className="text-red-500 text-sm">{errors.brand.message}</p>}
-//           </div>
-
-         
-//           <div>
-//             <label className="block mb-1 font-semibold">Model</label>
-//             <input
-//               {...register('model', { required: 'Model is required' })}
-//               placeholder="Model"
-//               className="w-full border border-gray-300 rounded px-3 py-2"
-//             />
-//             {errors.model && <p className="text-red-500 text-sm">{errors.model.message}</p>}
-//           </div>
-
-          
-//           <div className="md:col-span-2">
-//             <label className="block mb-1 font-semibold">Specification</label>
-//             <textarea
-//               {...register('specification')}
-//               placeholder="Specification"
-//               rows={4}
-//               className="w-full border border-gray-300 rounded px-3 py-2"
-//             />
-//           </div>
-
-        
-//           <div>
-//             <label className="block mb-1 font-semibold">Purchase Date</label>
-//             <input
-//               type="date"
-//               {...register('purchaseDate')}
-//               className="w-full border border-gray-300 rounded px-3 py-2"
-//             />
-//           </div>
-
-//           <div>
-//             <label className="block mb-1 font-semibold">Warranty Expiry</label>
-//             <input
-//               type="date"
-//               {...register('warrantyExpiry')}
-//               className="w-full border border-gray-300 rounded px-3 py-2"
-//             />
-//           </div>
-
-        
-//           <div>
-//             <label className="block mb-1 font-semibold">Resource Type ID</label>
-//             <input
-//               type="number"
-//               {...register('resourceTypeId', { required: true })}
-//               className="w-full border border-gray-300 rounded px-3 py-2"
-//             />
-//           </div>
-
-         
-//           <div>
-//             <label className="block mb-1 font-semibold">Resource Class ID</label>
-//             <input
-//               type="number"
-//               {...register('resourceClassId')}
-//               className="w-full border border-gray-300 rounded px-3 py-2"
-//             />
-//           </div>
-
-          
-//           <div>
-//             <label className="block mb-1 font-semibold">Resource Status ID</label>
-//             <input
-//               type="number"
-//               {...register('resourceStatusId')}
-//               className="w-full border border-gray-300 rounded px-3 py-2"
-//             />
-//           </div>
-
-        
-//           <div>
-//             <label className="block mb-1 font-semibold">Batch ID</label>
-//             <input
-//               type="number"
-//               {...register('batchId')}
-//               className="w-full border border-gray-300 rounded px-3 py-2"
-//             />
-//           </div>
-//         </div>
-
-//         <button
-//           type="submit"
-//           disabled={isSubmitting}
-//           className="mt-6 w-full bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-//         >
-//           {isSubmitting ? 'Creating...' : 'Create Resource'}
-//         </button>
-//       </form>
-//     </>
-//   );
-// };
-
-// export default ResourceForm;
