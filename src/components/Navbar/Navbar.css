@@ -1,12 +1,4 @@
-nav{
-    display: flex;
-    justify-content: space-between;
-    background: #052535;
-    align-items: center;
-    height: 80px;
-    
-    
-}
+
 .nav-logo{
     margin: 0 60px;
 }

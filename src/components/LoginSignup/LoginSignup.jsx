@@ -15,7 +15,7 @@ const LoginSignupForm = () => {
     password: "",
   });
 
-  const { setAccessToken } = useContext(AuthContext);
+  const { setAccessToken, setUser } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -43,24 +43,38 @@ const LoginSignupForm = () => {
 
     const endpoint =
       action === "Sign Up"
-        ? "http://localhost:8080/api/auth/signup"
+        ? "http://localhost:8080/api/auth/register"
         : "http://localhost:8080/api/auth/login";
 
     try {
       const response = await axios.post(endpoint, payload);
+
       if (response.status === 200) {
-        const token = response.data.data?.accessToken || response.data.token;
+        console.log("Login/Signup Response:", response.data);
+
+        // Extract tokens and user info from backend response
+        const token = response.data.data?.accessToken;
+        const refreshToken = response.data.data?.refreshToken;
+
+        // Get user info including role if present
+        const userData = response.data.data?.user || { email };
 
         if (token) {
+          // Store tokens and user info in localStorage
           localStorage.setItem("accessToken", token);
+          localStorage.setItem("refreshToken", refreshToken);
+          localStorage.setItem("user", JSON.stringify(userData));
+
+          // Update context
           setAccessToken(token);
+          setUser(userData);
+
           alert(`${action} successful.`);
           setFormData({ username: "", email: "", password: "" });
 
-          // Optional: redirect to protected page
-          // navigate("/dashboard");
+          navigate("/dashboard");
         } else {
-          alert("Access token missing in response.");
+          alert("Login succeeded but missing access token.");
         }
       } else {
         alert(`Unexpected response: ${response.statusText}`);
@@ -68,7 +82,7 @@ const LoginSignupForm = () => {
     } catch (error) {
       console.error("Error:", error);
       const message =
-        error.response?.data || "An error occurred. Please try again.";
+        error.response?.data?.message || "An error occurred. Please try again.";
       alert(`${action} failed: ${message}`);
     }
   };

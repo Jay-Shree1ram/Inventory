@@ -9,6 +9,8 @@ import ResourceEdit from '../components/Resource/resourceedit.js';
 import MasterClass from '../components/Master/masterclass.jsx';
 import MasterType from '../components/Master/mastertype.jsx';
 import MasterStatus from '../components/Master/masterstatus.jsx';
+import PingCheck from '../pages/PingCheck';
+import Dashboardpage from '../pages/Dashboardpage.jsx';
 
 const AppRoutes = () => {
   return (
@@ -22,6 +24,11 @@ const AppRoutes = () => {
       <Route path ="/resource/class" element={<MasterClass/>} />
       <Route path ="/resource/type" element={<MasterType/>} />
       <Route path ="/resource/status" element={<MasterStatus/>} />
+      <Route path="/ping" element={<PingCheck />} />
+      <Route path="/dashboard" element={<Dashboardpage/>} />
+
+
+
     
     </Routes>
   );
