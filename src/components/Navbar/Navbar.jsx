@@ -1,17 +1,20 @@
-import React, { useContext } from "react";
+import  { useContext } from "react";
 import "./Navbar.css";
 import "../../index.css";
-import { FiBox, FiDatabase, FiActivity } from "react-icons/fi";
+import {  FiActivity, FiUser,FiLogOut } from "react-icons/fi";
 import { Link, useNavigate } from "react-router-dom";
-import { AuthContext } from "../Global/common";
+
 
 const Navbar = () => {
-  const { logout } = useContext(AuthContext);
+const accessToken= localStorage.getItem('accessToken');
+
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    logout();
-    navigate("/login");
+    localStorage.removeItem("accessToken"); 
+    console.log("Access token removed");
+    console.log("Access token after logout: ", localStorage.getItem('accessToken'));
+    navigate("/login"); 
   };
 
   return (
@@ -22,28 +25,31 @@ const Navbar = () => {
         </Link>
       </div>
       <div className="nav-items">
-        <Link
-          to="/inventory"
+      
+        {accessToken ? (
+          <button
+            onClick={handleLogout}
+            className="nav-links flex items-center gap-2 text-gray-700 hover:text-blue-400 transition bg-transparent border-none cursor-pointer"
+          >
+            <FiLogOut size={34} />
+         
+          </button>
+        ) : (
+          <Link
+            to="/login"
+            className="nav-links flex items-center gap-2 text-gray-700 hover:text-blue-400 transition"
+          >
+            <FiActivity size={34} />
+            Login
+          </Link>
+        )}
+
+         <Link
+          to="/user"
           className="nav-links flex items-center gap-2 text-gray-700 hover:text-blue-400 transition"
         >
-          <FiBox size={22} />
-          Inventory
-        </Link>
-
-        <button
-          onClick={handleLogout}
-          className="nav-links flex items-center gap-2 text-gray-700 hover:text-blue-400 transition bg-transparent border-none cursor-pointer"
-        >
-          <FiActivity size={22} />
-          Logout
-        </button>
-
-        <Link
-          to="/resource"
-          className="nav-links flex items-center gap-2 text-gray-700 hover:text-blue-400 transition"
-        >
-          <FiDatabase size={22} />
-          Resource
+          <FiUser size={34} />
+       
         </Link>
       </div>
     </nav>

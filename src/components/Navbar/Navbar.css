@@ -22,16 +22,27 @@ nav{
     font-size: 50px;
     font-weight: 700;
 }
+.nav-items {
+  margin-right: 70px;
+  color: #ffffff;
+  font-size: 16px;
+  
+  display: flex;          /* make children horizontal */
+  gap: 30px;              /* spacing between items */
+  align-items: center;    /* vertical center alignment */
+}
 
-.nav-items{
-    margin-right:70px ;
-    color: #ffffff;
-    font-size: 16px;
+.nav-links {
+  color: #ffffff;
+  text-decoration: none;
+  display: flex;
+  align-items: center;   /* vertically center icon + text */
+  gap: 6px;              /* spacing between icon and text */
+  font-weight: 500;
 }
-li{
-    list-style: none;
-}
-.nav-links{
-    color: #ffffff;
-    text-decoration: none;
+
+button.nav-links {
+  background: transparent;
+  border: none;
+  cursor: pointer;
 }
