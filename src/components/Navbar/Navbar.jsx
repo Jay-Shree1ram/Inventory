@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import "./Navbar.css";
 import "../../index.css";
-import { FiBox, FiDatabase, FiActivity, FiUsers } from "react-icons/fi";
+import { FiBox, FiDatabase, FiLogOut, FiUsers, } from "react-icons/fi";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../Global/common";
 
@@ -49,7 +49,8 @@ const Navbar = () => {
               onClick={handleLogout}
               className="nav-links flex items-center gap-2 bg-transparent border-none cursor-pointer"
             >
-              <FiActivity size={20} />
+              {/* <FiActivity size={20} /> */}
+               <FiLogOut size={20} />
               Logout
             </button>
           </>

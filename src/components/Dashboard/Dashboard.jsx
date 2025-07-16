@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 const Dashboard = () => {
   return (
@@ -10,9 +11,13 @@ const Dashboard = () => {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
         <Card title="Users" value="1,024" color="bg-blue-500" />
-        <Card title="Orders" value="512" color="bg-green-500" />
-        <Card title="Revenue" value="$12,340" color="bg-yellow-500" />
-        <Card title="Feedbacks" value="89" color="bg-red-500" />
+        <Link to="/resource">
+        <Card title="Resources" value="512" color="bg-green-500" />
+        </Link>
+        <Card title="Status" value="12,340" color="bg-yellow-500" />
+        <Link to="/employees">
+        <Card title="Employee List" value="89" color="bg-red-500" />
+      </Link>
       </div>
 
       <section className="bg-white p-6 rounded-lg shadow-md">
