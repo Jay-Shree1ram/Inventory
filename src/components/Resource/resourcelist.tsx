@@ -1,4 +1,4 @@
-import { useEffect, useState, useContext } from 'react';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
 import Header from '../Navbar/Navbar';
 
@@ -32,9 +32,8 @@ const ResourceList = () => {
   const [statusFilter, setStatusFilter] = useState('');
   const [typeFilter, setTypeFilter] = useState('');
 
- 
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 2
+  const itemsPerPage = 2;
 
   const accessToken = localStorage.getItem('accessToken');
   const navigate = useNavigate();
@@ -123,13 +122,11 @@ const ResourceList = () => {
     (typeFilter ? res.resourceType === typeFilter : true)
   );
 
-  
   const totalPages = Math.ceil(filteredResources.length / itemsPerPage);
   const paginatedResources = filteredResources.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
-
 
   const handlePrevPage = () => {
     if (currentPage > 1) setCurrentPage((prev) => prev - 1);
@@ -163,7 +160,7 @@ const ResourceList = () => {
             value={statusFilter}
             onChange={(e) => {
               setStatusFilter(e.target.value);
-              setCurrentPage(1); 
+              setCurrentPage(1);
             }}
           >
             <option value="">All Status</option>
@@ -179,7 +176,7 @@ const ResourceList = () => {
             value={typeFilter}
             onChange={(e) => {
               setTypeFilter(e.target.value);
-              setCurrentPage(1); 
+              setCurrentPage(1);
             }}
           >
             <option value="">All Types</option>
@@ -198,8 +195,8 @@ const ResourceList = () => {
                 {[
                   "Resource Id", "Brand", "Model", "Specification", "Purchase Date",
                   "Warranty Expiry", "Type", "Class", "Status", "Batch ID", "Actions"
-                ].map((head, idx) => (
-                  <th key={idx} className="border px-4 py-3 text-left whitespace-nowrap">
+                ].map((head) => (
+                  <th key={head} className="border px-4 py-3 text-left whitespace-nowrap">
                     {head}
                   </th>
                 ))}
@@ -208,7 +205,7 @@ const ResourceList = () => {
             <tbody className="text-sm bg-white divide-y divide-gray-200">
               {paginatedResources.length > 0 ? (
                 paginatedResources.map((resource) => (
-                  <tr key={resource.id} className="hover:bg-gray-100 transition">
+                  <tr key={resource.resourceId} className="hover:bg-gray-100 transition">
                     <td className="px-4 py-3">{resource.resourceId}</td>
                     <td className="px-4 py-3">{resource.brand}</td>
                     <td className="px-4 py-3">{resource.model}</td>
@@ -250,7 +247,6 @@ const ResourceList = () => {
           </table>
         </div>
 
-     
         {filteredResources.length > itemsPerPage && (
           <div className="flex justify-between items-center mt-4 px-2">
             <button
@@ -274,7 +270,7 @@ const ResourceList = () => {
         )}
       </div>
 
-      {showModal && selectedResourceId && (
+      {showModal && selectedResourceId !== null && (
         <ResourceEditModal
           open={showModal}
           resourceId={selectedResourceId}
