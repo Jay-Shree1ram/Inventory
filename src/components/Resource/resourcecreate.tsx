@@ -34,13 +34,18 @@ const ResourceForm = () => {
         });
         console.log("Fetched classes response:", res.data);
         
-        setClasses(Array.isArray(res.data) ? res.data : res.data.result || []);
+        setClasses( res.data.data);
       } catch (err) {
         console.error("Error fetching classes:", err);
       }
     };
     fetchClass();
-  }, [accessToken]);
+  }, []);
+  
+useEffect(() => {
+  
+  console.log("Statuses updated:", classes);
+}, [classes]);
 
   useEffect(() => {
     const fetchType = async () => {
@@ -49,29 +54,40 @@ const ResourceForm = () => {
           headers: { Authorization: `Bearer ${accessToken}` },
         });
         console.log("Fetched types response:", res.data);
-        setTypes(Array.isArray(res.data) ? res.data : res.data.result || []);
+        setTypes(res.data.data);
       } catch (err) {
         console.error("Error fetching types:", err);
       }
     };
     fetchType();
-  }, [accessToken]);
+  }, []);
 
-  useEffect(() => {
-    const fetchStatuses = async () => {
-      try {
-        const res = await axios.get("http://localhost:8080/master/resource-status", {
-          headers: { Authorization: `Bearer ${accessToken}` },
-        });
-        console.log("Fetched statuses response:", res.data);
-        setStatuses(res.data.data);
-        console.log("Statuses:", statuses);
-      } catch (err) {
-        console.error("Error fetching statuses:", err);
-      }
-    };
-    fetchStatuses();
-  }, [accessToken]);
+  
+useEffect(() => {
+  
+  console.log("Statuses updated:", types);
+}, [types]);
+
+useEffect(() => {
+  const fetchStatuses = async () => {
+    try {
+      const res = await axios.get("http://localhost:8080/master/resource-status", {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+      console.log("Fetched statuses response:", res.data);
+      setStatuses(res.data.data); 
+    } catch (err) {
+      console.error("Error fetching statuses:", err);
+    }
+  };
+
+  fetchStatuses();
+}, []);
+
+useEffect(() => {
+  
+  console.log("Statuses updated:", statuses);
+}, [statuses]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
