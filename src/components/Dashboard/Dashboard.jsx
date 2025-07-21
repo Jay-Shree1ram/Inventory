@@ -14,7 +14,9 @@ const Dashboard = () => {
         <Link to="/resource">
         <Card title="Resources" value="512" color="bg-green-500" />
         </Link>
+        <Link to= "/ping">
         <Card title="Status" value="12,340" color="bg-yellow-500" />
+        </Link>
         <Link to="/employees">
         <Card title="Employee List" value="89" color="bg-red-500" />
       </Link>

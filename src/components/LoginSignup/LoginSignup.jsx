@@ -6,6 +6,8 @@ import email_icon from "../../assets/email.png";
 import password_icon from "../../assets/password.png";
 import { AuthContext } from "../Global/common";
 import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const LoginSignupForm = () => {
   const [action, setAction] = useState("Login");
@@ -31,7 +33,7 @@ const LoginSignupForm = () => {
     const { email, password, username } = formData;
 
     if (!email || !password || (action === "Sign Up" && !username)) {
-      alert("Please fill in all required fields.");
+      toast.error("Please fill in all required fields.");
       return;
     }
 
@@ -50,45 +52,49 @@ const LoginSignupForm = () => {
       const response = await axios.post(endpoint, payload);
 
       if (response.status === 200) {
-        console.log("Login/Signup Response:", response.data);
-
-        // Extract tokens and user info from backend response
         const token = response.data.data?.accessToken;
         const refreshToken = response.data.data?.refreshToken;
+        const role = response.data.data?.role || "USER"; // Default to USER if not present
 
-        // Get user info including role if present
-        const userData = response.data.data?.user || { email };
+        const userData = {
+          email,
+          role,
+        };
 
         if (token) {
-          // Store tokens and user info in localStorage
           localStorage.setItem("accessToken", token);
           localStorage.setItem("refreshToken", refreshToken);
           localStorage.setItem("user", JSON.stringify(userData));
-
-          // Update context
           setAccessToken(token);
           setUser(userData);
 
-          alert(`${action} successful.`);
+          toast.success(`${action} successful.`);
           setFormData({ username: "", email: "", password: "" });
 
-          navigate("/dashboard");
+          setTimeout(() => {
+            if (role === "ADMIN") {
+              navigate("/admin/dashboard");
+            } else {
+              navigate("/");
+            }
+          }, 1500);
         } else {
-          alert("Login succeeded but missing access token.");
+          toast.warn("Login succeeded but missing access token.");
         }
       } else {
-        alert(`Unexpected response: ${response.statusText}`);
+        toast.error(`Unexpected response: ${response.statusText}`);
       }
     } catch (error) {
       console.error("Error:", error);
       const message =
         error.response?.data?.message || "An error occurred. Please try again.";
-      alert(`${action} failed: ${message}`);
+      toast.error(`${action} failed: ${message}`);
     }
   };
 
   return (
     <div className="container">
+      <ToastContainer position="top-center" autoClose={2000} />
       <div className="header">
         <div className="text">{action}</div>
         <div className="underline"></div>
@@ -129,6 +135,12 @@ const LoginSignupForm = () => {
             onChange={handleChange}
           />
         </div>
+
+        {action === "Login" && (
+          <div className="forgot-password mx-8">
+            <a href="/forgot-password">Forgot password? Click here</a>
+          </div>
+        )}
 
         <div className="submit-container">
           <button type="submit" className="submit main-submit">

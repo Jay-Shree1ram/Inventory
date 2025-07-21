@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 
 const EmployeeList = () => {
@@ -8,38 +8,55 @@ const EmployeeList = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // Pagination & Sorting settings
+  const page = 0;
+  const size = 100; // or however many you want to fetch
+  const sort = ["id,asc"]; // You can change this to "name,desc", etc.
+
   useEffect(() => {
-    axios.get("http://localhost:8080/api/employees")
-      .then((response) => {
-        setEmployees(response.data);
-        setFilteredEmployees(response.data);
+    const fetchEmployees = async () => {
+      try {
+        const response = await axios.get("http://localhost:8080/api/admin/users", {
+          params: {
+            page,
+            size,
+            sort,
+          },
+        });
+
+        // Adjust based on your API response structure
+        const content = response.data?.content || [];
+
+        setEmployees(content);
+        setFilteredEmployees(content);
         setError(null);
-      })
-      .catch((error) => {
-        console.error("Error fetching employees:", error);
+      } catch (err) {
+        console.error("Error fetching employees:", err);
         setError("Failed to load employee data.");
-      })
-      .finally(() => {
+      } finally {
         setLoading(false);
-      });
+      }
+    };
+
+    fetchEmployees();
   }, []);
 
   useEffect(() => {
     const term = searchTerm.toLowerCase();
     const filtered = employees.filter((emp) =>
-      emp.name.toLowerCase().includes(term) ||
-      emp.email.toLowerCase().includes(term) ||
-      emp.id.toLowerCase().includes(term) ||
-      emp.department.toLowerCase().includes(term)
+      emp.name?.toLowerCase().includes(term) ||
+      emp.email?.toLowerCase().includes(term) ||
+      emp.id?.toString().includes(term) ||
+      emp.department?.toLowerCase().includes(term)
     );
     setFilteredEmployees(filtered);
   }, [searchTerm, employees]);
 
   return (
     <div className="container mx-auto p-6">
-<h2 className="text-3xl font-bold text-center mb-6 text-[#052535]">
-  Employee List
-</h2>
+      <h2 className="text-3xl font-bold text-center mb-6 text-[#052535]">
+        Employee List
+      </h2>
 
       {/* 🔍 Search Input */}
       <div className="mb-4 text-center">
@@ -52,9 +69,9 @@ const EmployeeList = () => {
         />
       </div>
 
-      <table className="min-w-full bg-white border border-gray-300 border-spacing-x-2">
+      <table className="min-w-full bg-white border border-gray-300">
         <thead>
-          <tr className="bg-[#052535] text-white ">
+          <tr className="bg-[#052535] text-white">
             <th className="py-2 px-4 border-b">Employee ID</th>
             <th className="py-2 px-4 border-b">Department</th>
             <th className="py-2 px-4 border-b">Email</th>
