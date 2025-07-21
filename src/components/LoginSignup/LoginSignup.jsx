@@ -3,13 +3,15 @@ import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
+
 const LoginPage = () => {
   const [isLogin, setIsLogin] = useState(true);
-
+  const [loading, setLoading] = useState(false);
   const [login, setLogin] = useState({ email: "", password: "" });
   const [register, setRegister] = useState({ username: "", email: "", password: "" });
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
+
   const handleLoginChange = (e) => {
     setLogin({ ...login, [e.target.name]: e.target.value });
   };
@@ -20,46 +22,51 @@ const LoginPage = () => {
 
   const handleSubmitLogin = async (e) => {
     e.preventDefault();
+    setLoading(true);
     const { email } = login;
 
     try {
       const response = await axios.post("http://localhost:8080/api/auth/login", login);
       const token = response.data.data?.accessToken || response.data.token;
       localStorage.setItem("accessToken", token);
-      toast.success(`Logged in as ${email}`);
-     
+
+      toast.success(`Logged in with ${email}`);
+      setLoading(false);
+
       setTimeout(() => {
-        navigate("/");
-      }, 1500)
+        navigate("/inventory");
+      }, 1500);
     } catch (error) {
       console.error("Login failed:", error);
-      setMessage(error.response?.data?.message || "Login failed. Please try again.");
       toast.error(error.response?.data?.message || "Something went wrong");
+      setLoading(false);
     }
   };
 
   const handleSubmitRegister = async (e) => {
     e.preventDefault();
+    setLoading(true);
     const { email } = register;
 
     try {
       const response = await axios.post("http://localhost:8080/api/auth/register", register);
       console.log("Registration response:", response.data);
-    
-      setIsLogin(true);
+
       toast.success(`Registered as ${email}`);
+      setLoading(false);
+      setIsLogin(true);
     } catch (error) {
       console.error("Registration failed:", error);
-      setMessage(error.response?.data?.message || "Registration failed. Please try again.");
       toast.error(error.response?.data?.message || "Something went wrong");
+      setLoading(false);
+
       setTimeout(() => {
         navigate("/login");
-      }, 1000)
+      }, 1000);
     }
   };
 
   return (
-
     <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
       <div className="w-full max-w-xl bg-white rounded-3xl p-10 shadow-lg">
         <h2 className="text-center text-4xl font-bold text-[#052535] mb-8">
@@ -119,8 +126,9 @@ const LoginPage = () => {
           <button
             type="submit"
             className="mt-6 w-full bg-[#052535] text-white text-lg font-bold py-3 rounded-full hover:bg-[#03415a] transition-colors"
+            disabled={loading}
           >
-            {isLogin ? "Login" : "Register"}
+            {loading ? "Processing..." : isLogin ? "Login" : "Register"}
           </button>
         </form>
 

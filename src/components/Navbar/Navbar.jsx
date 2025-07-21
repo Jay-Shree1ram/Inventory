@@ -26,31 +26,32 @@ const accessToken= localStorage.getItem('accessToken');
       </div>
       <div className="nav-items">
       
-        {accessToken ? (
-          <button
-            onClick={handleLogout}
-            className="nav-links flex items-center gap-2 text-gray-700 hover:text-blue-400 transition bg-transparent border-none cursor-pointer"
-          >
-            <FiLogOut size={34} />
-         
-          </button>
-        ) : (
-          <Link
-            to="/login"
-            className="nav-links flex items-center gap-2 text-gray-700 hover:text-blue-400 transition"
-          >
-            <FiActivity size={34} />
-            Login
-          </Link>
-        )}
+    {accessToken ? (
+  <button
+    onClick={handleLogout}
+    title="Logout"   
+    className="nav-links flex items-center gap-2 text-gray-700 hover:text-blue-400 transition bg-transparent border-none cursor-pointer"
+  >
+    <FiLogOut size={34} />
+  </button>
+) : (
+  <Link
+    to="/login"
+    title="Login"  
+    className="nav-links flex items-center gap-2 text-gray-700 hover:text-blue-400 transition"
+  >
+    <FiActivity size={34} />
+  </Link>
+)}
 
-         <Link
-          to="/user"
-          className="nav-links flex items-center gap-2 text-gray-700 hover:text-blue-400 transition"
-        >
-          <FiUser size={34} />
-       
-        </Link>
+<Link
+  to="/user"
+  title="Profile" 
+  className="nav-links flex items-center gap-2 text-gray-700 hover:text-blue-400 transition"
+>
+  <FiUser size={34} />
+</Link>
+
       </div>
     </nav>
   );
