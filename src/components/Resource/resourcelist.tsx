@@ -196,16 +196,17 @@ const ResourceList = () => {
                   "Resource Id", "Brand", "Model", "Specification", "Purchase Date",
                   "Warranty Expiry", "Type", "Class", "Status", "Batch ID", "Actions"
                 ].map((head) => (
-                  <th key={head} className="border px-4 py-3 text-left whitespace-nowrap">
+                <th key={head} className="border px-8 py-4 text-left whitespace-nowrap">
+
                     {head}
                   </th>
                 ))}
               </tr>
             </thead>
-            <tbody className="text-sm bg-white divide-y divide-gray-200">
+            <tbody className="text-sm bg-white divide-y  divide-gray-200">
               {paginatedResources.length > 0 ? (
                 paginatedResources.map((resource) => (
-                  <tr key={resource.resourceId} className="hover:bg-gray-100 transition">
+                  <tr key={resource.resourceId} className="hover:bg-gray-100  p-4 transition">
                     <td className="px-4 py-3">{resource.resourceId}</td>
                     <td className="px-4 py-3">{resource.brand}</td>
                     <td className="px-4 py-3">{resource.model}</td>

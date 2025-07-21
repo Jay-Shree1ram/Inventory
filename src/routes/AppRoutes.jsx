@@ -61,6 +61,7 @@ const AppRoutes = () => {
     try {
       const decoded = jwtDecode(accessToken);
       isAdmin = decoded.sub === "admin@hotmail.com";
+      console.log("Is Admin:", isAdmin);
     } catch (error) {
       console.error("Token decode error", error);
     }
