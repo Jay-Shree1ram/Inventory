@@ -25,16 +25,16 @@ const UserUpdateModal = ({ open, onClose, onSuccess, userId }: any) => {
 
         console.log("Fetched user data:", response.data);
 
-      
+
         const user = response.data.data || response.data.result || response.data;
 
-       
+
         setEmail(user.email || '');
         setRole(user.role || '');
-      } 
+      }
       catch (error) {
         console.error("Error fetching user data:", error);
-       
+
         setEmail('');
         setRole('');
       } finally {
@@ -45,8 +45,8 @@ const UserUpdateModal = ({ open, onClose, onSuccess, userId }: any) => {
     if (userId) {
       fetchUserData();
     } else {
-    
-    
+
+
       setEmail('');
       setRole('');
     }
@@ -58,12 +58,19 @@ const UserUpdateModal = ({ open, onClose, onSuccess, userId }: any) => {
 
     try {
       const payload = {
-       
+
         email,
         role,
       };
 
-      const res = await axios.post('http://localhost:8080/api/admin/users/update', payload);
+      console.log('Updating user with payload:', payload);
+   const res = await axios.put(`http://localhost:8080/api/admin/users/${userId}`, payload, {
+  headers: {
+    'Content-Type': 'application/json',
+    Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+  },
+});
+
       console.log('User updated successfully', res.data);
       onSuccess(res.data);
       handleClose();
@@ -75,7 +82,7 @@ const UserUpdateModal = ({ open, onClose, onSuccess, userId }: any) => {
   };
 
   const handleClose = () => {
-  
+
     setEmail('');
     setRole('');
     onClose();
@@ -113,20 +120,25 @@ const UserUpdateModal = ({ open, onClose, onSuccess, userId }: any) => {
               />
             </div>
 
+
             <div className="flex flex-col gap-2">
               <label htmlFor="role" className="font-semibold text-gray-700">
                 Role
               </label>
-              <input
+              <select
                 id="role"
                 name="role"
                 value={role}
                 onChange={(e) => setRole(e.target.value)}
-                placeholder="Role (e.g., admin, user)"
                 disabled={isSubmitting}
-                className="h-12 px-5 rounded-full bg-gray-200 text-gray-700 placeholder-gray-500 border-none outline-none focus:ring-2 focus:ring-[#052535]"
-              />
+                className="h-12 px-5 rounded-full bg-gray-200 text-gray-700 border-none outline-none focus:ring-2 focus:ring-[#052535]"
+              >
+                <option value="">Select role</option>
+                <option value="USER">USER</option>
+                <option value="ADMIN">ADMIN</option>
+              </select>
             </div>
+
 
             <div className="flex justify-end gap-4 pt-4">
               <button
