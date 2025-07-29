@@ -9,7 +9,7 @@ const LoginSignupPage = () => {
     <>
     <Navbar/>
     <LoginSignup/>
-    <Footer/>
+
     </>
   )
 }

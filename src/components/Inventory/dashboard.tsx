@@ -8,10 +8,10 @@ const InventoryDashboard = () => {
   const [recentBatches, setRecentBatches] = useState([]);
 
   const fetchData = async () => {
-    const res1 = await axios.get('/api/inventory/stats');
-    const res2 = await axios.get('/api/resources/batches?limit=5');
+    const res1 = await axios.get('http://localhost:3000/batches');
+   
     setStats(res1.data);
-    setRecentBatches(res2.data);
+    
   };
 
   const handleSuccess = () => {
@@ -32,7 +32,7 @@ const InventoryDashboard = () => {
         <h2 className="text-xl font-semibold mb-2">Recent Batches</h2>
         <table className="w-full border text-left">
           <thead>
-            <tr>
+            <tr><th className="p-2 border">Batch Id</th>
               <th className="p-2 border">Batch Code</th>
               <th className="p-2 border">Type</th>
               <th className="p-2 border">Quantity</th>
